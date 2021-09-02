@@ -8,8 +8,14 @@ AWS에서 Policy gradient Algorithm을 지원하고 있으며(내부 network구�
 
 # Reward function and  Training
 
+### 테스트 모델 생성
+각 성능에 대한 reward를 각각 계산하여, 마지막에 비중별로 합치는 방법을 이용해보았다.
+total reward = reward_lane + 4.0 * reward_avoid + 1.0 * reward_heading + 0.5 * reward_speed
+그러나, 각 하나나 두개를 조합한 reward로직보다 학습시간만 오래걸리고 각 reward에 대한 효과를 관찰할 수 없었다.
+그래서, 이후에는 1~2개의 reward조합으로 모델을 구성하는 방안으로 진행해보았다.
++ 상위 랭커들은 모두 track의 way point정보를 이용해서, 각 코스의 최적의 주행 라인을 따라가도록 학습한것을 파악하고, way point를 이용한 로직도 추가가 필수적이라는 것을 느꼈다.
 
-### 첫번쨰 모델 생성
+### 첫번째 모델 생성
 첫번째로는 AWS에서 제공하는 Sample reward function을 이용해서 학습을 진행하였다.
 Reward :  트랙 중심으로부터 거리가 가까울수록 높은 보상, 바퀴가 모두 트랙내에 존재하면 보상, 핸들기울기가 15도를 넘어가면 보상을 깎음.(직선구간에서 지그재그로 움직이는것을 방지하기위함.)
 결과적으로 training percentage completion은 35%정도 나왔고, Evaluating에서는 20%이하로 나왔다. Ranking은 아래와같다.
